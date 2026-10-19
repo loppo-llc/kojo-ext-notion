@@ -16,6 +16,7 @@ import (
 	"os"
 	"os/exec"
 	"os/signal"
+	"path/filepath"
 	"strings"
 	"syscall"
 	"time"
@@ -57,7 +58,7 @@ func runMCP() (int, error) {
 
 	cmd := exec.Command(npx, "-y", notionServer)
 	cmd.Stdin, cmd.Stdout, cmd.Stderr = os.Stdin, os.Stdout, os.Stderr
-	cmd.Env = childEnv(os.Environ(), token)
+	cmd.Env = withDirInPath(childEnv(os.Environ(), token), filepath.Dir(npx))
 	setGroup(cmd)
 	if err := cmd.Start(); err != nil {
 		return 1, fmt.Errorf("start %s: %w", notionServer, err)
@@ -167,4 +168,18 @@ func fetchSecrets(ctx context.Context, base, token, agentID string) (map[string]
 		return nil, err
 	}
 	return out.Secrets, nil
+}
+
+// withDirInPath puts npx's directory first in PATH: npx starts with
+// "#!/usr/bin/env node", and node usually sits next to it, which a
+// fallback location or npxPath may not have on PATH.
+func withDirInPath(env []string, dir string) []string {
+	for i, kv := range env {
+		k, v, _ := strings.Cut(kv, "=")
+		if strings.EqualFold(k, "PATH") {
+			env[i] = k + "=" + dir + string(os.PathListSeparator) + v
+			return env
+		}
+	}
+	return append(env, "PATH="+dir)
 }

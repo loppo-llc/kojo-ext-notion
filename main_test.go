@@ -33,3 +33,13 @@ func TestFetchSecrets(t *testing.T) {
 		t.Fatal("want error")
 	}
 }
+
+func TestWithDirInPath(t *testing.T) {
+	got := withDirInPath([]string{"A=1", "PATH=/bin"}, "/n")
+	if got[1] != "PATH=/n:/bin" {
+		t.Fatal(got)
+	}
+	if got := withDirInPath([]string{"A=1"}, "/n"); got[1] != "PATH=/n" {
+		t.Fatal(got)
+	}
+}

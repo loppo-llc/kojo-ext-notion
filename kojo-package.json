@@ -1,0 +1,26 @@
+{
+  "id": "notion",
+  "name": "Notion",
+  "version": "0.1.0",
+  "description": "Give a kojo agent Notion's official MCP server (@notionhq/notion-mcp-server), started locally with the agent's internal integration token.",
+  "kojoVersion": ">0.135.0",
+  "contributes": {
+    "settings": {
+      "scope": "per-agent",
+      "schema": "settings.schema.json"
+    },
+    "mcpServers": [
+      {
+        "name": "notion",
+        "exec": {
+          "darwin/arm64": "bin/darwin-arm64/kojo-ext-notion",
+          "darwin/amd64": "bin/darwin-amd64/kojo-ext-notion",
+          "linux/amd64": "bin/linux-amd64/kojo-ext-notion",
+          "linux/arm64": "bin/linux-arm64/kojo-ext-notion",
+          "windows/amd64": "bin/windows-amd64/kojo-ext-notion.exe"
+        },
+        "args": ["mcp"]
+      }
+    ]
+  }
+}

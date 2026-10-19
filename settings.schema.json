@@ -1,0 +1,19 @@
+{
+  "type": "object",
+  "description": "One Notion internal integration per agent. The agent sees exactly the pages and databases shared with that integration.",
+  "required": ["token"],
+  "properties": {
+    "token": {
+      "type": "string",
+      "format": "password",
+      "title": "Internal integration token",
+      "description": "notion.so/profile/integrations → your internal integration → Internal Integration Secret (ntn_…). Share pages with the integration from each page's ··· → Connections. Stored encrypted; never shown again."
+    },
+    "npxPath": {
+      "type": "string",
+      "title": "npx path",
+      "description": "Path to npx (Node.js 18+). Empty: look it up in PATH.",
+      "default": ""
+    }
+  }
+}

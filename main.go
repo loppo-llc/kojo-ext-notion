@@ -58,6 +58,7 @@ func runMCP() (int, error) {
 	cmd := exec.Command(npx, "-y", notionServer)
 	cmd.Stdin, cmd.Stdout, cmd.Stderr = os.Stdin, os.Stdout, os.Stderr
 	cmd.Env = childEnv(os.Environ(), token)
+	setGroup(cmd)
 	if err := cmd.Start(); err != nil {
 		return 1, fmt.Errorf("start %s: %w", notionServer, err)
 	}
@@ -65,7 +66,7 @@ func runMCP() (int, error) {
 	signal.Notify(sig, os.Interrupt, syscall.SIGTERM)
 	go func() {
 		for s := range sig {
-			_ = cmd.Process.Signal(s)
+			signalGroup(cmd, s)
 		}
 	}()
 	err = cmd.Wait()
@@ -107,6 +108,8 @@ func childEnv(env []string, token string) []string {
 	out := make([]string, 0, len(env)+1)
 	for _, kv := range env {
 		k, _, _ := strings.Cut(kv, "=")
+		// Windows environment names are case-insensitive.
+		k = strings.ToUpper(k)
 		switch {
 		case strings.HasPrefix(k, "KOJO_EXT_"), k == "NOTION_TOKEN", k == "OPENAPI_MCP_HEADERS":
 			continue

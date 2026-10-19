@@ -9,7 +9,7 @@ import (
 )
 
 func TestChildEnv(t *testing.T) {
-	got := childEnv([]string{"PATH=/bin", "KOJO_EXT_TOKEN=x", "KOJO_EXT_SECRETS={}", "NOTION_TOKEN=old", "KOJO_API_BASE=b"}, "ntn_1")
+	got := childEnv([]string{"PATH=/bin", "KOJO_EXT_TOKEN=x", "Kojo_Ext_Secrets={}", "NOTION_TOKEN=old", "KOJO_API_BASE=b"}, "ntn_1")
 	want := []string{"PATH=/bin", "KOJO_API_BASE=b", "NOTION_TOKEN=ntn_1"}
 	if !slices.Equal(got, want) {
 		t.Fatalf("got %v want %v", got, want)
